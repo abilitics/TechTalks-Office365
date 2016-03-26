@@ -1,0 +1,12 @@
+<html>
+    <script type="text/javascript"> 
+		var token = window.location.hash.substring(window.location.hash.indexOf("#access_token=") + 14, window.location.hash.indexOf("&token_type="));
+		if (token) {
+			localStorage.setItem("jstalks_token", token);
+			window.location = "index.htm";
+		}
+		else {
+			console.log(window.location.hash);
+		}
+    </script> 
+</html>

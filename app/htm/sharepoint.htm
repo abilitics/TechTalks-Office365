@@ -1,0 +1,91 @@
+<html ng-app="myApp">
+	
+	<style>
+		 html { background-color:#eaeaea; }
+		 .box { margin:20px;padding:10px;background-color:white;color:#767676; }
+	</style>
+	
+	<script type="text/javascript" src="https://code.angularjs.org/1.4.7/angular.min.js"></script>
+  
+	<div ng-controller="JsTalks">
+		<button ng-if="!isLoggedIn" ng-click="login()">Login</button>
+		<button ng-if="isLoggedIn" ng-click="logout()">Logout</button>
+	
+		<button ng-click="createItem()">Create Item</button>
+	
+		<div ng-repeat="item in items" class="box">
+			{{item.Title}}
+		</div>
+	
+		<pre id="results">{{ data }}</pre>
+		
+		<div style="color:red" ng-show="!!error">
+			Error: {{ error }}
+			<br/>
+			Error code: {{ errorCode}}
+		</div>
+	</div>
+    
+    <script type="text/javascript"> 
+      
+	  angular.module('myApp',[])
+	  
+	  .controller('JsTalks', ['$http', "$scope", function($http, $scope) {
+
+	      var token = localStorage.getItem('jstalks_token');
+		
+		$scope.isLoggedIn = !!token;
+		
+        if ($scope.isLoggedIn) {
+
+			$http.defaults.headers.common.Authorization = "Bearer " + token;
+			
+			$http.get("https://abilitics.sharepoint.com/_api/web/lists/getbytitle('Announcements')/items")
+			  .success(function successCallback(response) {
+				//$scope.data = JSON.stringify(response, "", 2);
+				$scope.items = response.value;
+				
+			}).error(function (errorObj, errorCode) { 
+				$scope.error = JSON.stringify(errorObj);
+				$scope.errorCode = errorCode;
+			});
+        }
+		
+		$scope.login = function() {
+		
+		  var clientId    = 'client_id';
+          var redirectUrl    = 'redirect_url';
+		  var resource = "https://yourtenant.sharepoint.com/";
+          window.location = 'https://login.windows.net/common/oauth2/authorize?response_type=token&client_id=' + clientId + '&resource=' + resource + '&redirect_uri=' + redirectUrl;
+		};
+		
+		$scope.logout = function() {
+		    localStorage.removeItem('jstalks_token');
+			window.location.reload();
+		}
+
+		$scope.createItem = function() {
+			
+			var request = {
+				 method: 'POST',
+				 url: "https://yourtenant.sharepoint.com/_api/web/lists/getbytitle('Announcements')/items",
+				 headers: {
+				   "accept": "application/json;odata=verbose",
+				   "content-type": "application/json;odata=verbose"
+				 },
+				 data: { '__metadata': { 'type': 'SP.List' }, 'Title': 'JSTalks hello world' }
+			};
+			
+			$http(request).then(function(response) {
+				window.location.reload();
+				//$scope.data = JSON.stringify(response, "", 2);
+				//$route.reload();
+			});
+
+		};
+		
+	}]);
+	
+    </script> 
+
+</html>

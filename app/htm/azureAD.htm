@@ -1,0 +1,29 @@
+<div ng-controller="AzureAD">
+
+	<pre id="results">{{ data }}</pre>
+		
+    <div ng-repeat="user in users" ng-if="user.assignedLicenses && user.assignedLicenses.length && user.jobTitle" class="ms-Persona ms-Persona--xl" style="margin-bottom:20px">
+        <div class="ms-Persona-imageArea">
+            <div class="ms-Persona-initials ms-Persona-initials--blue">{{user.givenName[0] + user.surname[0]}}</div>
+            <img class="ms-Persona-image" src="{{user.image}}">
+        </div>
+        <div class="ms-Persona-details">
+            <div class="ms-Persona-primaryText">{{user.displayName}}</div>
+            <div class="ms-Persona-secondaryText">{{user.jobTitle}}</div>
+            <div class="ms-Persona-tertiaryText">{{user.officeLocation}} {{user.country}}</div>
+            <div class="ms-Persona-optionalText">
+                <a href="mailto:{{user.mail}}"><i class="ms-Icon ms-Icon--mail ms-fontSize-xxl" aria-hidden="true"></i></a>
+                <a href="tel:{{user.mobilePhone}}"><i class="ms-Icon ms-Icon--phone ms-fontSize-xxl" aria-hidden="true"></i></a>
+            </div>
+            
+        </div>
+    </div>
+    
+		
+	<div style="color:red" ng-show="!!error">
+		Error: {{ error }}
+		<br/>
+		Error code: {{ errorCode}}
+	</div>
+
+</div>

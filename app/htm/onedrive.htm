@@ -1,0 +1,39 @@
+<div ng-controller="OneDrive">
+
+	<ul class="ms-List" ng-if="isLoggedIn">
+	
+	<li class="ms-ListItem is-unread is-selectable" ng-click="openFolder(parent, parent)" style="padding-bottom:20px">
+		<i class="ms-Icon ms-Icon--reactivate ms-fontSize-xxl ms-fontColor-themePrimary" aria-hidden="true"></i>
+		UP one level
+	</li>
+	
+	<li ng-repeat="file in files" class="ms-ListItem is-unread is-selectable">
+		<a ng-click="openFolder(file.id, parent)" ng-if="!!file.folder">
+			<span class="ms-ListItem-primaryText"> 
+				<i class="ms-Icon ms-Icon--folder ms-fontSize-xxl ms-fontColor-themePrimary" aria-hidden="true"></i>
+				{{file.name}}
+			</span>
+			<span class="ms-ListItem-secondaryText">modified {{file.lastModifiedDateTime | friendlyDate}}</span>
+			<span class="ms-ListItem-tertiaryText">{{file.folder.childCount}} files</span>
+		</a>
+		<a ng-click="openFile(file)" ng-if="!file.folder">
+			<span class="ms-ListItem-primaryText">
+				<i ng-if="file.name.endsWith('.pdf')" class="ms-Icon ms-Icon--filePDF ms-fontSize-xxl ms-fontColor-themePrimary" aria-hidden="true"></i>
+				<i ng-if="!file.name.endsWith('.pdf')" class="ms-Icon ms-Icon--fileDocument ms-fontSize-xxl ms-fontColor-themePrimary" aria-hidden="true"></i>
+				{{file.name}}
+			</span>
+			<span class="ms-ListItem-secondaryText">modified {{file.lastModifiedDateTime | friendlyDate}}</span>
+			<span class="ms-ListItem-tertiaryText">{{file.size | fileSize}}</span>
+		</a>
+	</li>
+	
+	</ul>
+	
+	<pre id="results">{{ data }}</pre>
+	
+	<div style="color:red" ng-show="!!error">
+		Error: {{ error }}
+		<br/>
+		Error code: {{ errorCode}}
+	</div>
+</div>

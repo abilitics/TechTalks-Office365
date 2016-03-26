@@ -1,0 +1,33 @@
+<html ng-app="myApp">
+
+<head>
+    <link rel="stylesheet" href="http://appsforoffice.microsoft.com/fabric/2.1.0/fabric.min.css">
+    <link rel="stylesheet" href="http://appsforoffice.microsoft.com/fabric/2.1.0/fabric.components.min.css">
+    <script src="https://code.angularjs.org/1.4.7/angular.min.js"></script>
+    <script src="app.js"></script>
+</head>
+
+<body>
+    <div ng-controller="Main">
+
+        
+
+        <br />
+
+        <ul class="ms-Pivot ms-Pivot--tabs">
+            <li class="ms-Pivot-link" ng-if="isLoggedIn" ng-class="{'is-selected': menuItem.selected}" ng-repeat="menuItem in menuItems" ng-click="menuClick(menuItem)">
+                <i class="ms-Icon ms-Icon--{{menuItem.icon}}" aria-hidden="true"></i>
+                {{menuItem.name}}
+            </li>
+            <li class="ms-Pivot-link" ng-if="!isLoggedIn" ng-click="login()">Login</li>
+            <li class="ms-Pivot-link" ng-if="isLoggedIn" ng-click="logout()" style="margin-left:10px">Logout</li>
+        </ul>
+
+        <br />
+
+        <div ng-include="selectedTemplate"></div>
+
+    </div>
+</body>
+
+</html>

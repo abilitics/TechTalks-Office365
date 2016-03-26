@@ -1,0 +1,105 @@
+<div ng-controller="Exchange">
+    
+    <div class="ms-MessageBanner" ng-if="composeBanner">
+        <div class="ms-MessageBanner-content">
+            <div class="ms-MessageBanner-text">
+                <div class="ms-MessageBanner-clipper">
+                    You've successfully sent email to {{composeTo}}.
+                </div>
+            </div>
+        </div>
+        <button class="ms-MessageBanner-close" ng-click="composeBanner = false">
+            <i class="ms-Icon ms-Icon--x"></i>
+        </button>
+    </div>
+
+    <div style="padding-bottom:20px">
+        <span href="#" ng-click="composeOpen = true">
+            <i class="ms-Icon ms-Icon--editBox ms-fontSize-xxl ms-fontColor-themePrimary" aria-hidden="true"></i>
+            Compose
+        </span>
+    </div>
+    
+
+    <ul class="ms-List" ng-if="isLoggedIn && !singleMessage">
+
+        <li ng-repeat="message in messages" class="ms-ListItem is-unread is-selectable">
+            <a ng-click="openMessage(message)">
+                <span class="ms-ListItem-primaryText">
+                    <b ng-if="!message.isRead">{{message.subject}}</b>
+                    <span ng-if="message.isRead">{{message.subject}}</span>
+                </span>
+                <span class="ms-ListItem-secondaryText">
+                    From: <span to-html="message.from | formatUser"></span>, 
+                    {{message.receivedDateTime | friendlyDate}}
+                </span>
+                <span class="ms-ListItem-tertiaryText"> 
+                    To: <span to-html="message.toRecipients | formatUsers"></span>
+                    <span ng-if="message.ccRecipients.length">; CC: <span to-html="message.ccRecipients | formatUsers"></span></span>
+                </span>
+                <div style="width:800px">{{message.bodyPreview}}</div>
+            </a>
+            <hr />
+        </li>
+
+        <li ng-if="nextLink">
+            <span href="#" ng-click="loadMore()">
+                <i class="ms-Icon ms-Icon--refresh ms-fontSize-xxl ms-fontColor-themePrimary" aria-hidden="true"></i>
+                Load More
+            </span>
+        </li>
+
+    </ul>
+
+    <div ng-if="singleMessage">
+        <div ng-click="backToList()">
+            <i class="ms-Icon ms-Icon--arrowLeft ms-fontSize-xxl ms-fontColor-themePrimary" aria-hidden="true"></i>
+            Back
+        </div>
+        <div style="margin:50px" ng-bind-html="singleMessage.body.content"></div>
+    </div>
+
+	<pre id="results" ng-if="!messages">{{ data }}</pre>
+
+    <div style="color:red" ng-show="!!error">
+        Error: {{ error }}
+        <br />
+        Error code: {{ errorCode}}
+    </div>
+
+    <div class="ms-Dialog ms-Dialog--compose" ng-if="composeOpen">
+        <div class="ms-Overlay ms-Overlay--dark js-DialogAction--close" ng-click=""></div>
+        <div class="ms-Dialog-main" style="width:600px;height:600px;max-width:inherit">
+            <button class="ms-Dialog-button ms-Dialog-button--close js-DialogAction--close"> <i class="ms-Icon ms-Icon--x"></i> </button>
+            <div class="ms-Dialog-header">
+                <p class="ms-Dialog-title">Send Mail</p>
+            </div>
+            <div class="ms-Dialog-inner">
+                <div class="ms-Dialog-content">
+
+                    <div class="ms-TextField is-required">
+                        <label class="ms-Label">Subject:</label>
+                        <input class="ms-TextField-field" type="text" ng-model="composeSubject">
+                    </div>
+
+                    <div class="ms-TextField is-required">
+                        <label class="ms-Label">Send to:</label>
+                        <input class="ms-TextField-field" type="text" ng-model="composeTo">
+                    </div>
+
+                    <div class="ms-TextField ms-TextField--multiline is-required">
+                        <label class="ms-Label">Body:</label>
+                        <textarea class="ms-TextField-field" ng-model="composeBody"></textarea>
+                    </div>
+
+                </div>
+                <div class="ms-Dialog-actions">
+                    <div class="ms-Dialog-actionsRight">
+                    <button class="ms-Dialog-action ms-Button ms-Button--primary" ng-click="composeSaveClick(composeSubject, composeTo, composeBody)"> <span class="ms-Button-label">Send Mail</span> </button> 
+                    <button class="ms-Dialog-action ms-Button" ng-click="composeCancelClick()"> <span class="ms-Button-label">Cancel</span> </button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

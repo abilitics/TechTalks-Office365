@@ -1,0 +1,40 @@
+<div ng-controller="Calendar">
+			
+	<pre id="results">{{ data }}</pre>
+
+    <div ng-if="pageContent" ng-click="back()">
+        <i class="ms-Icon ms-Icon--arrowLeft ms-fontSize-xxl ms-fontColor-themePrimary" aria-hidden="true"></i>
+    </div>
+
+    <ul class="ms-List" ng-if="isLoggedIn && !singleMessage">
+
+        <li ng-repeat="event in events" class="ms-ListItem is-unread is-selectable">
+            <a ng-click="openEvent(event)">
+                <span class="ms-ListItem-primaryText">{{event.subject}}</span>
+                <span class="ms-ListItem-secondaryText">
+                    {{event.start.dateTime | formatDate}}, organized by <span to-html="event.organizer | formatUser"></span>
+                </span>
+                <span class="ms-ListItem-tertiaryText">Attendees: <span to-html="event.attendees | formatUsers"></span></span>
+                <div style="width:800px">{{event.bodyPreview}}</div>
+            </a>
+            <hr />
+        </li>
+
+        <li ng-if="nextLink">
+            <span href="#" ng-click="loadMore()">
+                <i class="ms-Icon ms-Icon--refresh ms-fontSize-xxl ms-fontColor-themePrimary" aria-hidden="true"></i>
+                Load More
+            </span>
+        </li>
+
+    </ul>
+	
+	<div ng-bind-html="pageContent"></div>
+	
+	<div style="color:red" ng-show="!!error">
+		Error: {{ error }}
+		<br/>
+		Error code: {{ errorCode}}
+	</div>
+	
+</div>
