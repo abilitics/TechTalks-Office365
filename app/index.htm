@@ -1,8 +1,8 @@
 <html ng-app="myApp">
 
 <head>
-    <link rel="stylesheet" href="http://appsforoffice.microsoft.com/fabric/2.1.0/fabric.min.css">
-    <link rel="stylesheet" href="http://appsforoffice.microsoft.com/fabric/2.1.0/fabric.components.min.css">
+    <link rel="stylesheet" href="//appsforoffice.microsoft.com/fabric/fabric-core/4.1.0/fabric.min.css" />
+	<link rel="stylesheet" href="//appsforoffice.microsoft.com/fabric/fabric-js/1.0.0/fabric.components.min.css">
     <script src="https://code.angularjs.org/1.4.7/angular.min.js"></script>
 	<script src="settings.js"></script>
     <script src="app.js"></script>
@@ -15,7 +15,7 @@
 
         <br />
 
-        <ul class="ms-Pivot ms-Pivot--tabs">
+        <ul class="ms-Pivot ms-Pivot--large ms-Pivot--tabs">
             <li class="ms-Pivot-link" ng-if="isLoggedIn" ng-class="{'is-selected': menuItem.selected}" ng-repeat="menuItem in menuItems" ng-click="menuClick(menuItem)">
                 <i class="ms-Icon ms-Icon--{{menuItem.icon}}" aria-hidden="true"></i>
                 {{menuItem.name}}

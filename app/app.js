@@ -6,21 +6,19 @@ angular.module('myApp', [])
 
         $scope.isLoggedIn = !!token;
         $scope.menuItems = [
-            { name: "Home", url: '', selected: true, icon: "home" },
-            { name: "Users", url: 'htm/users.htm', icon: "group" },
-			{ name: "Groups", url: 'htm/groups.htm', icon: "group" },
-            { name: "Mailbox", url: 'htm/mailbox.htm', icon: "mail" },
-            { name: "Calendar", url: 'htm/calendar.htm', icon: "calendar" },
-            { name: "OneDrive", url: 'htm/onedrive.htm', icon: "briefcase" },
-            { name: "Onenote", url: 'htm/onenote.htm', icon: "notebook" },
-            { name: "SharePoint", url: 'htm/sharepoint.htm', icon: "work" },
+            { name: "Home", url: 'htm/home.htm', icon: "home" },
+            { name: "Users", url: 'htm/users.htm', icon: "People" },
+			{ name: "Groups", url: 'htm/groups.htm', icon: "Group" },
+            { name: "Mailbox", url: 'htm/mailbox.htm', icon: "Mail" },
+            { name: "Calendar", url: 'htm/calendar.htm', icon: "Calendar" },
+            { name: "OneDrive", url: 'htm/onedrive.htm', icon: "CloudUpload" },
+            { name: "Onenote", url: 'htm/onenote.htm', icon: "OneNoteLogo" },
+            { name: "SharePoint", url: 'htm/sharepoint.htm', icon: "SharepointLogo" },
 			{ name: "Excel", url: 'htm/excel.htm', icon: "ExcelDocument" }
         ];
 
         if ($scope.isLoggedIn) {
-
             $http.defaults.headers.common.Authorization = "Bearer " + token;
-            //$scope.selectedTemplate = "htm/onenote.htm";
         }
 
         $scope.login = function () {
@@ -48,8 +46,28 @@ angular.module('myApp', [])
 
         };
 
+		$scope.menuClick($scope.menuItems[0]);
     }])
 
+		.controller('Home', ['$http', "$scope", function($http, $scope) {
+		
+		var token = localStorage.getItem('jstalks_token');
+		
+		if (token) {
+		    $http.get("https://graph.microsoft.com/v1.0/me").success(function successCallback(response) {
+				
+				$scope.user = response;
+				
+			}).error(function (errorObj, errorCode) { 
+				$scope.error = JSON.stringify(errorObj);
+				$scope.errorCode = errorCode;
+			});
+		}
+
+		function loadImage (user) {
+			
+		}
+	}])
 	  
 	  .controller('Users', ['$http', "$scope", function($http, $scope) {
 		
@@ -58,9 +76,11 @@ angular.module('myApp', [])
 		if (token) {
 		    $http.get("https://graph.microsoft.com/v1.0/users?$select=id,displayName,mail,jobTitle,assignedLicenses,officeLocation,country,mobilePhone,givenName,surname")
 				.success(function successCallback(response) {
-				//$scope.data = JSON.stringify(response, "", 2);
+				
+					//$scope.data = JSON.stringify(response, "", 2);
+					
 				    $scope.users = response.value.filter(function (user) {
-				        return user.assignedLicenses && user.assignedLicenses.length && user.jobTitle;
+				        return user.assignedLicenses && user.assignedLicenses.length;
 				    });
 
 				    angular.forEach($scope.users, function (user) {
@@ -489,3 +509,4 @@ angular.module('myApp', [])
                 }
             };
         });
+		

@@ -6,7 +6,7 @@
         <i class="ms-Icon ms-Icon--arrowLeft ms-fontSize-xxl ms-fontColor-themePrimary" aria-hidden="true"></i>
     </div>
 
-	<div ng-repeat="page in pages" ng-if="!pageContent" class="ms-ListItem is-unread is-selectable">
+	<div ng-repeat="page in pages" ng-if="!pageContent" class="ms-ListItem is-selectable">
         <div ng-click="openPage(page)">
             <span class="ms-ListItem-primaryText">{{page.title}}</span>
             <span class="ms-ListItem-secondaryText">modified {{page.lastModifiedTime | friendlyDate}}</span>

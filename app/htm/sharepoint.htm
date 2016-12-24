@@ -8,7 +8,7 @@
 
     <ul class="ms-List" ng-if="isLoggedIn && !items">
 
-        <li ng-repeat="list in lists" class="ms-ListItem is-unread is-selectable">
+        <li ng-repeat="list in lists" class="ms-ListItem is-selectable">
             <a ng-click="openList(list)">
                 <span class="ms-ListItem-primaryText">{{list.name}}</span>
                 <span class="ms-ListItem-secondaryText">{{list.list.template}}</span>
@@ -20,7 +20,7 @@
 	
 	<ul class="ms-List" ng-if="!!items">
 
-        <li ng-repeat="item in items" class="ms-ListItem is-unread is-selectable">
+        <li ng-repeat="item in items" class="ms-ListItem is-selectable">
             <span class="ms-ListItem-primaryText">{{item.columnSet.Title}}</span>
             <span class="ms-ListItem-secondaryText">created by {{item.columnSet.Author}} {{item.columnSet.Created | friendlyDate}}</span>
             <hr />
