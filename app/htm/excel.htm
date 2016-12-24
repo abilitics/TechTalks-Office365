@@ -1,0 +1,21 @@
+<div ng-controller="Excel">
+			
+	<pre id="results">{{ data }}</pre>
+
+    <table border="1" cellpadding="5" ng-if="isLoggedIn && rows">
+        <tr ng-repeat="row in rows">
+			<td ng-repeat="cell in row.values[0]">
+				{{cell}}
+			</td>
+        </tr>
+    </table>
+	
+	<div ng-bind-html="pageContent"></div>
+	
+	<div style="color:red" ng-show="!!error">
+		Error: {{ error }}
+		<br/>
+		Error code: {{ errorCode}}
+	</div>
+	
+</div>

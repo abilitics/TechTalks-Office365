@@ -1,0 +1,25 @@
+<div ng-controller="Groups">
+
+	<pre id="results">{{ data }}</pre>
+	
+	<ul class="ms-List" ng-if="isLoggedIn">
+    <li class="ms-ListItem" ng-repeat="group in groups">
+        <span class="ms-ListItem-primaryText">{{group.displayName}}</span>
+		<span class="ms-ListItem-secondaryText" ng-if="!!group.mail">
+			<a href='mailto:{{group.mail}}'>{{group.mail}}</a>
+		</span>
+		<span class="ms-ListItem-secondaryText" ng-if="group.securityEnabled">
+			Security enabled
+		</span>
+		<span class="ms-ListItem-secondaryText" ng-if="group.groupTypes && group.groupTypes.length && group.groupTypes[0] === 'Unified'">
+			Office 365 Group
+		</span>
+    </li>    
+		
+	<div style="color:red" ng-show="!!error">
+		Error: {{ error }}
+		<br/>
+		Error code: {{ errorCode}}
+	</div>
+
+</div>

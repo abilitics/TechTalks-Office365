@@ -7,27 +7,25 @@ angular.module('myApp', [])
         $scope.isLoggedIn = !!token;
         $scope.menuItems = [
             { name: "Home", url: '', selected: true, icon: "home" },
-            { name: "Azure AD", url: 'htm/azureAD.htm', icon: "group" },
-            { name: "Exchange", url: 'htm/exchange.htm', icon: "mail" },
+            { name: "Users", url: 'htm/users.htm', icon: "group" },
+			{ name: "Groups", url: 'htm/groups.htm', icon: "group" },
+            { name: "Mailbox", url: 'htm/mailbox.htm', icon: "mail" },
             { name: "Calendar", url: 'htm/calendar.htm', icon: "calendar" },
             { name: "OneDrive", url: 'htm/onedrive.htm', icon: "briefcase" },
             { name: "Onenote", url: 'htm/onenote.htm', icon: "notebook" },
-            { name: "SharePoint", url: 'htm/sharepoint.htm', icon: "work", isRedirect: true },
-            { name: "Yammer", url: 'htm/yammer.htm', icon: "org", isRedirect: true }
+            { name: "SharePoint", url: 'htm/sharepoint.htm', icon: "work" },
+			{ name: "Excel", url: 'htm/excel.htm', icon: "ExcelDocument" }
         ];
 
         if ($scope.isLoggedIn) {
 
             $http.defaults.headers.common.Authorization = "Bearer " + token;
-            console.log("logged in");
-            //$scope.selectedTemplate = "htm/calendar.htm";
+            //$scope.selectedTemplate = "htm/onenote.htm";
         }
 
         $scope.login = function () {
-            var clientId = 'client_id';
-            var redirectUrl = 'redirect_url';
             var resource = "https://graph.microsoft.com/";
-            window.location = 'https://login.windows.net/common/oauth2/authorize?response_type=token&client_id=' + clientId + '&resource=' + resource + '&redirect_uri=' + redirectUrl;
+            window.location = 'https://login.windows.net/common/oauth2/authorize?response_type=token&client_id=' + techTalks.clientId + '&resource=' + resource + '&redirect_uri=' + techTalks.redirectUrl;
         };
 
         $scope.logout = function () {
@@ -53,7 +51,7 @@ angular.module('myApp', [])
     }])
 
 	  
-	  .controller('AzureAD', ['$http', "$scope", function($http, $scope) {
+	  .controller('Users', ['$http', "$scope", function($http, $scope) {
 		
 		var token = localStorage.getItem('jstalks_token');
 		
@@ -87,10 +85,31 @@ angular.module('myApp', [])
 		}
 	}])
 	
+	.controller('Groups', ['$http', "$scope", function($http, $scope) {
+		
+		var token = localStorage.getItem('jstalks_token');
+		
+		$scope.isLoggedIn = !!token;
+		
+		if ($scope.isLoggedIn) {
+			
+		    $http.get("https://graph.microsoft.com/v1.0/groups")
+				.success(function successCallback(response) {
+
+				    $scope.groups = response.value;
+
+			}).error(function (errorObj, errorCode) { 
+				$scope.error = JSON.stringify(errorObj);
+				$scope.errorCode = errorCode;
+			});
+		}
+
+	}])
+	
 	.controller('OneDrive', ['$http', "$scope", function($http, $scope) {
 
         var token = localStorage.getItem('jstalks_token');
-		var rootUrl = "https://graph.microsoft.com/v1.0/me/drive/root/children?$select=name,size,lastModifiedDateTime,contentUrl,id,file,folder";
+		var rootUrl = "https://graph.microsoft.com/v1.0/me/drive/root/children?$select=name,size,lastModifiedDateTime,contentUrl,id,file,folder,webUrl";
 		
 		$scope.isLoggedIn = !!token;
 		
@@ -101,6 +120,7 @@ angular.module('myApp', [])
         }
 		
 		$scope.openFile = function(file) {
+			console.log(file.webUrl);
 			window.open(file.webUrl);
 		};
 		
@@ -129,7 +149,7 @@ angular.module('myApp', [])
 		
 	}])
 	
-	.controller('Exchange', ['$http', "$scope", "$sce", function($http, $scope, $sce) {
+	.controller('Mailbox', ['$http', "$scope", "$sce", function($http, $scope, $sce) {
 
         var token = localStorage.getItem('jstalks_token');
         var rootUrl = "https://graph.microsoft.com/v1.0/me/messages?$select=subject,ccRecipients,receivedDateTime,from,hasAttachments,id,isRead,toRecipients,bodyPreview";
@@ -299,6 +319,79 @@ angular.module('myApp', [])
 
     }])
 	
+	.controller('SharePoint', ['$http', "$scope", function ($http, $scope) {
+
+        var token = localStorage.getItem('jstalks_token');
+
+        $scope.isLoggedIn = !!token;
+
+        if ($scope.isLoggedIn) {
+
+            $http.defaults.headers.common.Authorization = "Bearer " + token;
+			
+			$http.get("https://graph.microsoft.com/beta/sharepoint/site?$select=id").success(function (response) {
+				
+				$scope.siteId = response.id;
+				
+				$http.get("https://graph.microsoft.com/beta/sharepoint/sites/" + $scope.siteId + "/lists?$select=id,name,list").success(function(response) {
+				
+					//$scope.data = JSON.stringify(response, "", 2);
+					$scope.lists = response.value;
+				
+				});
+
+            }).error(function (errorObj, errorCode) {
+                $scope.error = JSON.stringify(errorObj);
+                $scope.errorCode = errorCode;
+            });
+			
+        }
+        else {
+            $scope.error = "Not logged in";
+        }
+
+		$scope.openList = function(list) {
+			
+			$http.get("https://graph.microsoft.com/beta/sharepoint/sites/" + $scope.siteId + "/lists/" + list.id + "/items?expand=columnSet").success(function(response) {
+				
+				//$scope.data = JSON.stringify(response, "", 2);
+				$scope.items = response.value;
+				
+			}).error(function (errorObj, errorCode) {
+                $scope.error = JSON.stringify(errorObj);
+                $scope.errorCode = errorCode;
+            });
+			
+		}
+    }])
+	
+	.controller('Excel', ['$http', "$scope", function ($http, $scope) {
+
+        var token = localStorage.getItem('jstalks_token');
+
+        $scope.isLoggedIn = !!token;
+
+        if ($scope.isLoggedIn) {
+
+            $http.defaults.headers.common.Authorization = "Bearer " + token;
+			
+			$http.get("https://graph.microsoft.com/v1.0/me/drive/root:/SampleExcel.xlsx:/workbook/worksheets('Bsec Scorecard Report')/tables('BSEC')/rows?$top=10").success(function (response) {
+
+				//$scope.data = JSON.stringify(response, "", 2);
+				$scope.rows = response.value;
+
+            }).error(function (errorObj, errorCode) {
+                $scope.error = JSON.stringify(errorObj);
+                $scope.errorCode = errorCode;
+            });
+			
+        }
+        else {
+            $scope.error = "Not logged in";
+        }
+
+    }])
+	
     .filter("formatDate", function() {
 	
         var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec" ];
@@ -395,4 +488,4 @@ angular.module('myApp', [])
                     el.html(scope.$eval(attrs.toHtml));
                 }
             };
-        })
+        });
